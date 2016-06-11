@@ -1,0 +1,137 @@
+<head>
+    <title>Chat with Socket IO</title>
+    <style>
+    body {
+	font-family: Roboto;
+
+
+
+
+background: #304352; /* fallback for old browsers */
+background: -webkit-linear-gradient(to left, #304352 , #d7d2cc); /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to left, #304352 , #d7d2cc); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        
+        
+
+} h1 {
+	background: #2980b9;
+	color:white;
+	margin: 0;
+	padding: 10px 20px;
+	text-transform: uppercase;
+	font-size: 24px;
+	font-weight: normal;
+} #chatWrap {
+    margin-left: 25px;
+    margin-right: 5px;
+} #users {
+    color: blue;
+    font-style: bold;
+}
+        #chat {
+            height: 500px;
+             border:1px solid black;
+             margin-top: 3px;
+             margin-bottom: 3px;
+        }
+        #contentWrap {
+            display: none;
+        }
+        #chatWrap {
+            padding: 5px;
+            float:left;
+           
+        }
+        .error {
+            color: red;
+        }
+        .whisper {
+            color:purple;
+            font-style: italic;
+        }
+        .msg {
+            color: green;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        $(document).ready(function() {
+           var socket = io.connect();
+           var messageForm = $('#sendmessage');
+           var chat = $('#chat');
+           var messageBox = $('#message');
+           var nickForm = $('#setNick');
+           var nickError = $('#nickError');
+           var nickBox = $('#nickname');
+           var users = $("#users");
+           
+           $(nickForm).submit(function(e){
+               e.preventDefault();
+               socket.emit('new user', $(nickBox).val(), function(data) {
+                   if(data) {
+                       $('#nickWrap').hide();
+                       $('#contentWrap').show();
+                   } else {
+                       $(nickError).html('That username is already taken. Try again.');
+                   }
+               });
+               $(nickBox).val('');
+           });
+           
+      socket.on('usernames', function(data) {
+         var html = '';
+         for(i=data.length - 1; i >= 0; i--){
+             html += data[i] + '<br/>';
+         }
+         $(users).html(html);
+         });  
+           $(messageForm).submit(function(e) {
+              e.preventDefault();
+              socket.emit('send message', $(messageBox).val(), function(data) {
+                  $(chat).append('<span class="error"><strong>' + data + "<br/></span>") ;
+              });
+              $(messageBox).val('');
+           });
+           
+           socket.on('load old msgs', function(docs) {
+               for(i=0; i < docs.length; i++) {
+                displayMsg(docs[i]);
+               }
+           });
+           
+          socket.on('new message', function(data) {
+             $(chat).append('<span class="msg"><strong>' + data.nick + ':</strong> ' + data.msg + "<br/></span>") ;
+          });
+          socket.on('whisper', function(data) {
+              $(chat).append('<span class="whisper"> <strong>' + data.nick + ':</strong> ' + data.msg + "<br/> </span>") ;
+          });
+           function displayMsg(data) {
+               $(chat).append('<span class="msg"><strong>' + data.nick + ':</strong> ' + data.msg + "<br/></span>") ;
+           } 
+        });
+    </script>
+</head>
+<body>
+<div id="nickWrap">
+    <p>Enter a username:</p>
+    <p id="nickError"></p>
+    <form id="setNick">
+        <input size="35" id="nickname" placeholder="Nickname">
+        <input type="submit">
+     </form>
+</div>
+<div id="contentWrap">
+    <div id="chatWrap">
+        <h1>The Box of Chats</h1>
+    <div id="chat">
+        
+    </div>
+    <form id="sendmessage">
+        <input type="text" id="message" size="35" placeholder="Send a message!">
+        <input type="submit">
+    </form>
+        </div>
+        <div id="users"></div>
+    </div>
+</body>

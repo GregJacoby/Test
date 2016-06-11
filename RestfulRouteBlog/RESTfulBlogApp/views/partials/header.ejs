@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Blog App 2.0</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.css">
+    <script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js"></script>
+        
+
+    <link rel="stylesheet" href="/stylesheets/app.css">
+    </head>
+<body>
+    <div class="ui pointing fixed inverted menu">
+        
+        <div class="ui container">
+            <div class="header item">
+                <i class="cloud icon" id="navicon"></i>
+                Blog Application
+                
+            </div>
+            <a href="/" class="item">Home</a>
+            <a href="/blogs/new" class="item">New Post</a>
+             </div>
+            <div class="right menu">
+                <a href="/register" class="item">Register</a>
+                
+                <button class="item" id="login">Login</button>
+            </div>
+       
+        
+        
+    </div>
+    <div class="ui modal">
+  <i class="close icon"></i>
+  <div class="image content">
+    <div class="ui medium image">
+      <img src="https://managedadmin.com/wp-content/uploads/2015/04/doorway.jpeg">
+    </div>
+    <div class="description">
+      <div class="ui header">Sign up. You won't regret it!</div>
+   <form class="ui form" action="/login" method="POST">
+  <div class="field">
+    <label>Username</label>
+    <input type="text" name="username" placeholder="username" required>
+  </div>
+  <div class="field">
+    <label>Password</label>
+    <input type="password" name="password" placeholder="password" required>
+  </div>
+  
+  </div>
+  <button class="ui button" type="submit">Submit</button>
+</form>
+
+    </div>
+  </div>
+
+  </div>
+
+
+        <script>
+      
+   
+
+$("#login").on("click", function() {
+   $('.ui.modal')
+  .modal('show')
+;
+});
+
+</script>
